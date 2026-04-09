@@ -53,8 +53,8 @@ def main():
     )
     parser.add_argument(
         '--device',
-        choices=['arm', 'sdt-hello', 'both','none'],
-        default='none',
+        choices=['arm', 'sdt-hello', 'both', None],
+        default=None,
         help='Which device to print status for: arm (motor positions), sdt-hello (simple motor pos), or both.'
     )
     
@@ -139,11 +139,10 @@ def main():
                         if check_sdt_hello:
                             print(f"sdt hello position: {device.get_simple_motor_status()['pos']}")
                             
-                        if check_sdt_hello:
-                            if check_visuable:
-                                pos = device.get_simple_motor_status()
-                                if pos:
-                                    Plotjuggle_data['Hello']["motor_position"] = pos["pos"]
+                        if check_visuable:
+                            pos = device.get_simple_motor_status()
+                            if pos:
+                                Plotjuggle_data['Hello']["motor_position"] = pos["pos"]
             if check_visuable:
                 Plotjuggle_current_send_time = time.time()
                 if Plotjuggle_current_send_time - Plotjuggle_last_send_time >= 0.01:  # 10ms
