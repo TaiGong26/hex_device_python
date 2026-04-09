@@ -36,12 +36,13 @@ def main():
     # Parse command line arguments
     parser = argparse.ArgumentParser(
         description='Hexapod robotic arm trajectory planning and execution test',
-        formatter_class=argparse.RawTextHelpFormatter
+        formatter_class=argparse.RawTextHelpFormatter,
+        usage="python hello_test.py --url ws://<device_url>:8439 [options]"
     )
     parser.add_argument(
         '--url', 
         metavar='URL',
-        default="ws://0.0.0.0:8439",
+        required=True,
         help='WebSocket URL for HEX device connection, example: ws://0.0.0.0:8439 or ws://[::1%%eth0]:8439'
     )
     parser.add_argument(
@@ -52,8 +53,8 @@ def main():
     )
     parser.add_argument(
         '--device',
-        choices=['arm', 'sdt-hello', 'both'],
-        default='both',
+        choices=['arm', 'sdt-hello', 'both','none'],
+        default='none',
         help='Which device to print status for: arm (motor positions), sdt-hello (simple motor pos), or both.'
     )
     
@@ -86,7 +87,6 @@ def main():
         Plotjuggle_last_send_time = time.time()
         print(f"============= visuable Server url:{visuableIp} port:{visuablePort} =================")
         
-    
     # Init HexDeviceApi
     api = HexDeviceApi(ws_url=args.url, control_hz=500, enable_kcp=True, local_port=0)
     first_time = True
