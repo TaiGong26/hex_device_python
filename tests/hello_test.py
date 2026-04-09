@@ -53,9 +53,9 @@ def main():
     )
     parser.add_argument(
         '--device',
-        choices=['arm', 'hello', 'both', 'none'],
-        default='none',
-        help='Which device to print status for: arm (motor positions), hello (simple motor pos), or both.'
+        choices=['arm', 'sdt-hello', 'both', None],
+        default=None,
+        help='Which device to print status for: arm (motor positions), sdt-hello (simple motor pos), or both.'
     )
     
     parser.add_argument(
