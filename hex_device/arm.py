@@ -660,7 +660,7 @@ class Arm(DeviceBase, MotorBase):
         msg.end_pose.CopyFrom(end_pose)
         # warning!!! If not provided AccelerationSource, gravity compensation will close.
         if acceleration_source is not None:
-            msg.acceleration_source.CopyFrom(acceleration_source)
+            msg.acceleration_source.custom_acceleration.CopyFrom(acceleration_source)
         return msg
 
     def _construct_ApiJointPositionCommand_msg(self, joint_positions: List[float], velocities: List[float], accelerations: List[float]) -> public_api_types_pb2.ArmApiJointPositionCommand:
