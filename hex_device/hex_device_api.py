@@ -650,6 +650,24 @@ class HexDeviceApi:
         msg = public_api_down_pb2.APIDown()
         msg.placeholder_message = True
         return msg
+    
+    def _construct_reboot_message(self, reboot_mode: str) -> public_api_down_pb2.APIDown:
+        """
+        Construct reboot message
+        """
+        mode = {
+            'app' : public_api_types_pb2.RebootMode.RmAppOnly,
+            'linux' : public_api_types_pb2.RebootMode.RmLinux,
+            'app_with_motor' : public_api_types_pb2.RebootMode.RmAppWithMotorPowerCut
+        }
+        
+        msg = public_api_down_pb2.APIDown()
+        reboot_request = public_api_types_pb2.RebootRequest()
+        reboot_request.reboot_magic_number=0x0065686e6f73696b
+        reboot_request.reboot_mode = mode[reboot_mode]
+        msg.reboot_request.CopyFrom(reboot_request)
+
+        return msg
 
     async def _send_down_message(self, data: public_api_down_pb2.APIDown):
         # Add protocol version to the message
@@ -1317,3 +1335,16 @@ class HexDeviceApi:
         if len(self.__raw_data) == 0:
             return (None, 0)
         return (self.__raw_data.pop(0), len(self.__raw_data))
+
+    def send_reboot_command(self, reboot_mode: str):
+        """
+        Send reboot command to the device
+        Args:
+            reboot_mode: Reboot mode, can be 'app', 'linux' or 'app_with_motor'
+        """
+        if reboot_mode not in ['app', 'linux', 'app_with_motor']:
+            self._logger.warning(f"Invalid reboot mode: {reboot_mode}, must be one of 'app', 'linux' or 'app_with_motor'")
+            return
+        
+        msg = self._construct_reboot_message(reboot_mode)
+        asyncio.run_coroutine_threadsafe(self._send_down_message(msg), self.__loop)
